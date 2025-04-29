@@ -2,6 +2,7 @@ using PokeApi.Models;
 using PokeApi.Repositories.Interfaces;
 using PokeApi.Responses;
 using PokeApi.Services.Interfaces;
+using RestSharp;
 
 namespace PokeApi.Repositories;
 
@@ -34,25 +35,10 @@ public class PokemonRepository : IPokemonRepository
            }
 
       }
+      public async Task<PokemonDetailModel> GetPokemonDetailAsync(string url)
+      {
+        return await _apiResponseService.GetClient<PokemonDetailModel>().GetAsync<PokemonDetailModel>(url);
 
-
-      public async Task<PokemonDetailModel> GetPokemonDetailAsync(int Id)
-{
-    var PokemonClient = _apiResponseService.GetClient<PokemonDetailModel>();
-
-    var response = await PokemonClient.GetAsync<PokemonModel>(
-        resource: $"pokemon/{Id}");
-
-    if (response != null)
-    {
-        return response;
-    }
-    else
-    {
-        throw new Exception("Error fetching Pokemon details");
-    }
-}
-
-
+      }
 
 }

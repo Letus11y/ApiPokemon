@@ -8,27 +8,52 @@ namespace PokeApi.ViewModels;
 
 public partial class PokemonViewModel : ObservableObject
 {
+    // Propiedades para la lista de Pokémon y estado ocupado
     [ObservableProperty]
-    
     public ObservableCollection<PokemonModel> _pokemons;
 
     [ObservableProperty]
     private bool _isBusy;
+    [ObservableProperty]
+private bool _isPopupVisible;
 
-    private IPokemonRepository _pokemonRepository;
 
+    // Propiedad para los detalles del Pokémon seleccionado
+    [ObservableProperty]
+    private PokemonDetailModel _pokemonDetail;
+
+    // Repositorio de datos
+    private readonly IPokemonRepository _pokemonRepository;
+
+    // Constructor
     public PokemonViewModel()
     {
-        _pokemonRepository = Startup.GetService<IPokemonRepository>(); 
+        // Se inicializa el repositorio desde el contenedor de dependencias
+        _pokemonRepository = Startup.GetService<IPokemonRepository>();
     }
 
+    // Comando para cargar la lista de Pokémon
     [RelayCommand]
-    public async virtual Task LoadDataPokemons()
+    public async Task LoadDataPokemons()
     {
-        IsBusy = true;
-        var pokemons = await _pokemonRepository.GetAllPokemonsAsync(1);
-        Pokemons = new ObservableCollection<PokemonModel>(pokemons);
-        await Task.Delay(TimeSpan.FromSeconds(3));
-        IsBusy = false;
+        IsBusy = true; // Mostrar el estado de carga
+        var pokemons = await _pokemonRepository.GetAllPokemonsAsync(1); // Obtener los datos
+        Pokemons = new ObservableCollection<PokemonModel>(pokemons); // Asignarlos a la colección observable
+        await Task.Delay(TimeSpan.FromSeconds(3)); // Simulación de carga
+        IsBusy = false; // Ocultar el estado de carga
     }
+
+  [RelayCommand]
+public async Task LoadPokemonDetails(string url)
+{
+    IsBusy = true; // Mostrar el estado de carga antes de iniciar la tarea
+
+    // Obtener los detalles del Pokémon
+    PokemonDetail = await _pokemonRepository.GetPokemonDetailAsync(url);
+    await Task.Delay(TimeSpan.FromSeconds(10));
+    IsBusy = false; // Ocultar el estado de carga
+    IsPopupVisible = true; // Activar el popup con los detalles cargados
+}
+
+
 }

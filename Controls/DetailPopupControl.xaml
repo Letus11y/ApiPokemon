@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokeApi.Controls.DetailPopupControl"
+             IsVisible="{Binding IsPopupVisible}">
+    <Border Stroke="Gray"
+            StrokeThickness="2"
+            BackgroundColor="White"
+            Padding="20"
+            Margin="30"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+        <VerticalStackLayout Spacing="20">
+            <!-- Nombre del Pokémon -->
+            <Label Text="{Binding Name}" FontSize="24" HorizontalTextAlignment="Center" />
+
+            <!-- Imagen del Pokémon -->
+            <Image Source="{Binding Sprites.FrontDefault}" 
+                   WidthRequest="150" HeightRequest="150"
+                   HorizontalOptions="Center" />
+
+            <!-- Lista de habilidades del Pokémon -->
+            <Label Text="Habilidades:" FontSize="18" HorizontalOptions="Start" />
+            <CollectionView ItemsSource="{Binding Abilities}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Ability.Name}" FontSize="16" HorizontalOptions="Start" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Botón para cerrar el popup -->
+            <!-- <Button Text="Cerrar" Command="{Binding ClosePopupCommand}" HorizontalOptions="Center" /> -->
+        </VerticalStackLayout>
+    </Border>
+</ContentView>
