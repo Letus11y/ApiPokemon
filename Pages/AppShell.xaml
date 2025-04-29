@@ -8,8 +8,14 @@
     Title="PokeApi">
 
     <ShellContent
-        Title="Los Pokemons"
+        Title="Los Pokemon"
         ContentTemplate="{DataTemplate pg:PokemonPage}"
         Route="PokemonPage" />
+
+
+    <ShellContent
+        Title="Pokemon Locales"
+        ContentTemplate="{DataTemplate pg:PokemonLocalPage}"
+        Route="PokemonLocalPage"/>
 
 </Shell>
