@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <cv:InvertBoolConverter x:Key="invertBoolConverter"/>
+            <cv:ExperienceColorConverter x:Key="experienceColorConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

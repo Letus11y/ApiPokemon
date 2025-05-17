@@ -3,57 +3,50 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PokeApi.Models;
 using PokeApi.Repositories.Interfaces;
+using PokeApi.Mappers;
+using PokeApi.Extensions;
 
 namespace PokeApi.ViewModels;
 
 public partial class PokemonViewModel : ObservableObject
 {
-    // Propiedades para la lista de Pokémon y estado ocupado
     [ObservableProperty]
-    public ObservableCollection<PokemonModel> _pokemons;
+    private ObservableCollection<PokemonModel> _pokemons;
 
     [ObservableProperty]
     private bool _isBusy;
-    [ObservableProperty]
-private bool _isPopupVisible;
 
-
-    // Propiedad para los detalles del Pokémon seleccionado
     [ObservableProperty]
     private PokemonDetailModel _pokemonDetail;
 
-    // Repositorio de datos
-    private readonly IPokemonRepository _pokemonRepository;
+    [ObservableProperty]
+    private string _pokemonTypes;
 
-    // Constructor
+    private readonly IPokemonRepository _pokemonRepository;
+    private readonly IPokemonRealmRepository _pokemonRealmRepository;
+
     public PokemonViewModel()
     {
-        // Se inicializa el repositorio desde el contenedor de dependencias
         _pokemonRepository = Startup.GetService<IPokemonRepository>();
+        _pokemonRealmRepository = Startup.GetService<IPokemonRealmRepository>();
     }
 
-    // Comando para cargar la lista de Pokémon
     [RelayCommand]
     public async Task LoadDataPokemons()
     {
-        IsBusy = true; // Mostrar el estado de carga
-        var pokemons = await _pokemonRepository.GetAllPokemonsAsync(1); // Obtener los datos
-        Pokemons = new ObservableCollection<PokemonModel>(pokemons); // Asignarlos a la colección observable
-        await Task.Delay(TimeSpan.FromSeconds(3)); // Simulación de carga
-        IsBusy = false; // Ocultar el estado de carga
+        IsBusy = true;
+        var pokemons = await _pokemonRepository.GetAllPokemonsAsync(1);
+        Pokemons = new ObservableCollection<PokemonModel>(pokemons);
+        await Task.Delay(500); // Pequeña pausa visual
+        IsBusy = false;
     }
 
-  [RelayCommand]
-public async Task LoadPokemonDetails(string url)
-{
-    IsBusy = true; // Mostrar el estado de carga antes de iniciar la tarea
+    [RelayCommand]
+    public async Task NavigateToPokemonDetail(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return;
 
-    // Obtener los detalles del Pokémon
-    PokemonDetail = await _pokemonRepository.GetPokemonDetailAsync(url);
-    await Task.Delay(TimeSpan.FromSeconds(10));
-    IsBusy = false; // Ocultar el estado de carga
-    IsPopupVisible = true; // Activar el popup con los detalles cargados
-}
-
-
+        // Navegación hacia la página de detalles, pasando el parámetro por query
+      await Shell.Current.GoToAsync($"PokemonDetailPage?url={Uri.EscapeDataString(url)}");
+    }
 }

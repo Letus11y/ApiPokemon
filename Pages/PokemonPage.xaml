@@ -5,45 +5,55 @@
              xmlns:vm="clr-namespace:PokeApi.ViewModels"
              xmlns:ct="clr-namespace:PokeApi.Controls"
              Title="PokemonPage">   
+
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
             EventName="Appearing"
-            Command="{Binding LoadDataPokemonsCommand}"/>
+            Command="{Binding LoadDataPokemonsCommand}" />
     </ContentPage.Behaviors>
 
     <ContentPage.BindingContext>
-        <vm:PokemonViewModel/>
+        <vm:PokemonViewModel />
     </ContentPage.BindingContext>
 
-    <Grid Padding="10" RowDefinitions="Auto, *" ColumnDefinitions="*, *">
-        <!-- Sección de lista de Pokémon -->
-        <CollectionView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+    <Grid RowDefinitions="*">
+        
+        <!-- Lista de Pokémon con scroll -->
+        <CollectionView Grid.Row="0"
                         ItemsSource="{Binding Pokemons}"
-                        IsVisible="{Binding IsBusy, Converter={StaticResource invertBoolConverter}}">
+                        IsVisible="{Binding IsBusy, Converter={StaticResource invertBoolConverter}}"
+                        Margin="10">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="0.4*, 0.6*" RowDefinitions="Auto">
-                        <!-- Nombre del Pokémon -->
-                        <Label Grid.Column="0" Text="{Binding Name}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
-                        <!-- Botón para ver detalles -->
-                        <Button Grid.Column="1"
-                                Text="Ver detalles"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PokemonViewModel}}, Path=LoadPokemonDetailsCommand}"
+                    <Grid Padding="10"
+                          ColumnDefinitions="0.4*, 0.6*">
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PokemonViewModel}}, Path=NavigateToPokemonDetailCommand}" 
                                 CommandParameter="{Binding Url}" />
+                        </Grid.GestureRecognizers>
+
+                        <Label Grid.Column="0"
+                               Text="{Binding Name}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+
+                        <Label Grid.Column="1"
+                               Text="➡️"
+                               FontSize="20"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Sección de carga -->
-        <ct:CustomLoaderControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+        <!-- Loader personalizado encima de la lista -->
+        <ct:CustomLoaderControl Grid.Row="0"
                                 Message="POKEMON"
                                 MessageSize="30"
                                 IsVisible="{Binding IsBusy}" />
-
-        <!-- Popup para Detalles -->
-        <ct:DetailPopupControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                               IsVisible="{Binding IsPopupVisible}"
-                               BindingContext="{Binding PokemonDetail}" />
     </Grid>
 </ContentPage>

@@ -180,6 +180,18 @@
         </Setter>
     </Style>
 
+     <Style TargetType="Label"
+            x:Key="LabelCustom">
+        <Setter Property="TextColor"
+                Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}"/>
+        <Setter Property="FontFamily"
+                Value="Underdog-Regular"/>
+        <Setter Property="FontSize"
+                Value="60"/>
+        <Setter Property="FontAttributes"
+                Value="Italic"/>
+    </Style>
+
     <Style TargetType="Span">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
     </Style>

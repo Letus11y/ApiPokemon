@@ -1,0 +1,136 @@
+
+{
+    public class PokemonDetailModel
+    {
+     
+        public int Id { get; set; }
+
+        public string? Name { get; set; }
+
+      
+        public int BaseExperience { get; set; }
+
+       
+        public int Height { get; set; }
+
+     
+        public List<AbilityInfo>? Abilities { get; set; }
+
+    
+        public SpriteInfo? Sprites { get; set; }
+
+        public List<PokemonType>? Types { get; set; } // Corregimos la referencia
+    }
+
+    public class AbilityInfo
+    {
+       
+        public BasicInfo? Ability { get; set; }
+
+    
+        public bool IsHidden { get; set; }
+    }
+
+    public class BasicInfo
+    {
+     
+        public string? Name { get; set; }
+
+       
+        public string? Url { get; set; }
+    }
+
+    public class SpriteInfo
+    {
+     
+        public string? FrontDefault { get; set; }
+
+      
+        public string? BackDefault { get; set; }
+
+    
+        public string? FrontShiny { get; set; }
+
+       
+        public string? BackShiny { get; set; }
+    }
+
+    public class PokemonType
+    {
+    
+        public int Slot { get; set; }
+
+   
+        public TypeInfo Type { get; set; } // Ahora "type" apunta a "TypeInfo"
+    }
+
+    public class TypeInfo
+    {
+        
+        public string Name { get; set; }
+
+        public string Url { get; set; }
+    }
+}
+
+
+
+
+
+lo de mappers
+
+// using System.Linq;
+// using PokeApi.Models;
+
+// namespace PokeApi.Extensions
+{
+    public static class PokemonExtensions
+    {
+        public static string GetPokemonTypes(this PokemonDetailModel pokemon)
+        {
+            if (pokemon?.Types == null || !pokemon.Types.Any())
+                return "Sin tipos";
+
+            return string.Join(", ", pokemon.Types
+                .Where(t => t.Type != null) // Aseguramos que no sea null
+                .Select(t => t.Type.Name)); // Accedemos correctamente a "name"
+        }
+    }
+}
+
+
+// using System;
+// using PokeApi.Entities;
+// using PokeApi.Models;
+
+// namespace PokeApi.Extensions;
+
+public static class PokemonProfile
+{
+    public static PokemonEntity ToEntety(this PokemonModel obj)
+    {
+        return new PokemonEntity
+        {
+            Id = MongoDB.Bson.ObjectId.GenerateNewId(),
+
+        };
+    }
+}
+
+obtener pokemons
+
+ [RelayCommand]
+    public async Task LoadDataPokemons()
+    {
+        try
+        {
+            IsBusy = true;
+            var pokemons = await _pokemonRepository.GetAllPokemonsAsync(1);
+            Pokemons = new ObservableCollection<PokemonModel>(pokemons);
+        }
+        finally
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            IsBusy = false;
+        }
+    }

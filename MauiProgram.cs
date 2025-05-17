@@ -23,16 +23,21 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 			builder.Services.AddSingleton<IPokemonRepository, PokemonRepository>();
+			builder.Services.AddSingleton<IPokemonRealmRepository, PokemonRealmRepository>();
 			builder.Services.AddSingleton<IResponseService, ResponseService>();
+			builder.Services.AddSingleton<IContextDataBase, ContexDataBase>();
 			
 			builder.Services.AddTransient<PokemonViewModel>();
+			builder.Services.AddTransient<PokemonLocalViewModel>();
+			builder.Services.AddTransient<PokemonDetailViewModel>();
 
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif 
       var app = builder.Build();
 
-       Startup.ServicesProvider = app.Services;
-		return builder.Build();
+		Startup.ServicesProvider = app.Services;
+		return app; // Devuelves el app ya construido, no lo construyes dos veces
+
 	}
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokeApi.Pages.PokemonDetailPage"
+             xmlns:vm="clr-namespace:PokeApi.ViewModels"
+             xmlns:ct="clr-namespace:PokeApi.Controls"
+             Title="PokemonDetalles">
+             
+    <ContentPage.BindingContext>
+        <vm:PokemonViewModel/>
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Nombre -->
+            <Label Text="{Binding PokemonDetail.Name}" 
+                   FontSize="32" 
+                   HorizontalTextAlignment="Center" 
+                   FontAttributes="Bold" 
+                   Style="{StaticResource LabelCustom}"/>
+
+            <!-- Imagen -->
+            <Image Source="{Binding PokemonDetail.Sprites.FrontDefault}" 
+                   WidthRequest="200" 
+                   HeightRequest="200" 
+                   HorizontalOptions="Center" />
+
+            <!-- Base de Experiencia -->
+            <Label FontSize="18">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Experiencia: " TextColor="Black"/>
+                        <Span Text="{Binding PokemonDetail.Base_Experience}"
+                              TextColor="{Binding PokemonDetail.Base_Experience, Converter={StaticResource experienceColorConverter}}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <!-- Habilidades -->
+            <StackLayout>
+                <Label Text="Habilidades:" FontSize="20" />
+                <CollectionView ItemsSource="{Binding PokemonDetail.Abilities}" HeightRequest="50">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding Ability.Name}" FontSize="16" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!-- Tipos -->
+            <StackLayout>
+                <Label Text="Tipos:" FontSize="20" />
+                <CollectionView ItemsSource="{Binding PokemonDetail.Types}" HeightRequest="200">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ct:TypeBadgeControl TypeName="{Binding Type.Name}" Margin="5" Padding="8,4" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+            <!-- Descripción de tipos -->
+            <Label Text="{Binding TiposDescripcion}" 
+               FontSize="18" 
+               HorizontalOptions="Center" 
+               FontAttributes="Italic"
+               TextColor="DarkSlateGray" />
+    
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

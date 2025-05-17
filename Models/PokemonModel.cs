@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace PokeApi.Models
 {
-    public class PokemonModel
+    public class PokemonModel 
     {
        
         [JsonPropertyName("name")]
